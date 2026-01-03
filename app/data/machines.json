@@ -1,0 +1,8 @@
+{
+  "A1": { "status": "RUNNING" },
+  "A2": { "status": "IDLE" },
+  "A3": { "status": "MAINTENANCE" },
+  "B5": { "status": "DOWN" },
+  "B7": { "status": "RUNNING" },
+  "C2": { "status": "RUNNING" }
+}

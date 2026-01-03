@@ -1,0 +1,7 @@
+{
+  "101": { "status": "In Production" },
+  "102": { "status": "Quality Check" },
+  "103": { "status": "Delayed" },
+  "104": { "status": "Packed" },
+  "105": { "status": "Dispatched" }
+}
