@@ -1,7 +1,5 @@
 import math
 
-# Simple token estimator for Gemini-like LLMs
-# Approx: 1 token ~ 0.75 words
 def estimate_tokens(text: str):
     words = len(text.split())
     tokens = math.ceil(words / 0.75)

@@ -2,7 +2,6 @@ import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:8000';
 
-// Chat API
 export const sendChatMessage = async (message) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/chat/`, {
@@ -15,7 +14,6 @@ export const sendChatMessage = async (message) => {
   }
 };
 
-// Workflow APIs
 export const getMachineStatus = async (machineId) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/workflow/machine/${machineId}`);
@@ -46,7 +44,6 @@ export const getSafetyAlerts = async () => {
   }
 };
 
-// Batch API
 export const sendBatchQueries = async (messages) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/batch/multi`, {

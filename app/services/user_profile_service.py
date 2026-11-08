@@ -2,13 +2,12 @@ import json
 import time
 from typing import Optional, Dict
 
-USER_PROFILES = {}  # In-memory storage: {user_id: {profile_data}}
+USER_PROFILES = {}
 
 def extract_user_info(message: str) -> Optional[Dict]:
     """Extract user profile information from introduction messages"""
     msg_lower = message.lower()
     
-    # Check if it's an introduction message
     intro_keywords = ["my name is", "i'm", "i am", "store this about me", "remember:", "my details:"]
     if not any(keyword in msg_lower for keyword in intro_keywords):
         return None
@@ -23,7 +22,6 @@ def extract_user_info(message: str) -> Optional[Dict]:
         "timestamp": time.time()
     }
     
-    # Extract name
     try:
         if "my name is" in msg_lower:
             parts = message.split("my name is", 1)
@@ -35,39 +33,32 @@ def extract_user_info(message: str) -> Optional[Dict]:
                 if split_text in msg_lower:
                     parts = message.lower().split(split_text, 1)
                     if len(parts) > 1:
-                        # Get the original case version
                         idx = message.lower().index(split_text) + len(split_text)
                         rest = message[idx:].strip()
                         first_part = rest.split(",")[0].split(".")[0].strip()
-                        # Check if it's a name (has uppercase letters)
                         if any(char.isupper() for char in first_part):
                             profile["name"] = first_part
                             break
     except (IndexError, ValueError):
-        pass  # Skip name extraction if parsing fails
+        pass
     
-    # Extract role/position
     try:
         roles = ["supervisor", "manager", "technician", "engineer", "officer", "coordinator", "operator"]
         for role in roles:
             if role in msg_lower:
-                # Find the phrase containing the role
                 idx = msg_lower.find(role)
                 if idx != -1:
-                    # Get surrounding context (20 chars before, 30 after)
                     start = max(0, idx - 20)
                     end = min(len(message), idx + len(role) + 30)
                     role_context = message[start:end].strip()
-                    # Clean up the role context
                     for sep in [",", ".", "\n"]:
                         if sep in role_context:
                             role_context = role_context.split(sep)[0].strip()
                     profile["role"] = role_context
                     break
     except (IndexError, ValueError):
-        pass  # Skip role extraction if parsing fails
+        pass
     
-    # Extract shift
     try:
         shifts = ["shift a", "shift b", "shift c", "morning shift", "evening shift", "night shift"]
         for shift in shifts:
@@ -77,7 +68,6 @@ def extract_user_info(message: str) -> Optional[Dict]:
     except (IndexError, ValueError):
         pass
     
-    # Extract time ranges
     try:
         import re
         time_pattern = r'\d{1,2}:\d{2}\s*[AP]M\s*[-–]\s*\d{1,2}:\d{2}\s*[AP]M'
@@ -87,7 +77,6 @@ def extract_user_info(message: str) -> Optional[Dict]:
     except (IndexError, ValueError, AttributeError):
         pass
     
-    # Extract machines
     try:
         machine_ids = ["a1", "a2", "a3", "b5", "b7", "c2"]
         for machine in machine_ids:
@@ -96,7 +85,6 @@ def extract_user_info(message: str) -> Optional[Dict]:
     except (IndexError, ValueError):
         pass
     
-    # Extract orders
     try:
         import re
         order_pattern = r'\b(?:orders?|order)\s*(\d{3}(?:\s*[-,]\s*\d{3})*)'
@@ -112,12 +100,10 @@ def extract_user_info(message: str) -> Optional[Dict]:
 def save_user_profile(user_id: str, profile_data: Dict):
     """Save or update user profile"""
     if user_id in USER_PROFILES:
-        # Merge with existing profile
         existing = USER_PROFILES[user_id]
         for key, value in profile_data.items():
-            if value:  # Only update non-empty values
+            if value:
                 if isinstance(value, list) and key in existing:
-                    # Merge lists
                     existing[key] = list(set(existing[key] + value))
                 else:
                     existing[key] = value

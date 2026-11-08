@@ -18,7 +18,6 @@ def order_status(order_id: str):
 
 @router.get("/safety")
 def safety_alerts():
-    # you can expand with real logic or mock data
     alerts = [
         {"id": 1, "alert": "Oil spill near line 3"},
         {"id": 2, "alert": "Machine B7 overheating"},

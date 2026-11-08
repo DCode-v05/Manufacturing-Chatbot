@@ -1,10 +1,8 @@
 import google.generativeai as genai
 from app.services.google_auth import init_gemini
 
-# Initialize at import time
 init_gemini()
 
-# Load the model
 model = genai.GenerativeModel("gemini-2.5-flash")
 
 
@@ -15,7 +13,6 @@ async def call_gemini(messages):
     We will convert them into final text for SDK.
     """
 
-    # convert LLM-style messages → single prompt
     final_prompt = ""
 
     for m in messages:

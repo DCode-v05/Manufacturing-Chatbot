@@ -7,7 +7,6 @@ from app.data import context_doc_loader
 
 router = APIRouter(prefix="/batch", tags=["batch"])
 
-# lightweight context manager per user (for quick demo)
 ctx = ContextManager(max_messages=4)
 
 @router.post("/multi")
@@ -17,7 +16,6 @@ async def batch_multi(payload: dict):
     returns: { "replies": [ "...", "...", "..." ] }
     """
     msgs: List[str] = payload.get("messages", [])
-    # cache layer: check each message
     replies = []
     to_call = []
     indexes_to_call = []
@@ -32,9 +30,7 @@ async def batch_multi(payload: dict):
             indexes_to_call.append(i)
 
     if to_call:
-        # Build batched prompt — compact
         system_text = f"You are a manufacturing assistant. Use this doc:\n\n{context_doc_loader.CONTEXT_DOC_BRIEF}"
-        # build one combined message asking for separated answers
         combined = "Answer the following requests. Return JSON array string with one element per request in same order.\n\nRequests:\n"
         for idx, r in enumerate(to_call):
             combined += f"{idx+1}. {r}\n"
@@ -45,21 +41,16 @@ async def batch_multi(payload: dict):
         ]
 
         raw = await call_gemini(messages)
-        # Expecting model returns a JSON array or text we can parse
         import json, re
-        # try to extract JSON array
         try:
             arr = json.loads(raw)
         except Exception:
-            # fallback: find bracketed JSON in text
             m = re.search(r'(\[.*\])', raw, re.S)
             if m:
                 arr = json.loads(m.group(1))
             else:
-                # if still fail, split by lines
                 arr = [s.strip() for s in raw.splitlines() if s.strip()]
 
-        # map back
         for j, ans in enumerate(arr):
             orig_index = indexes_to_call[j]
             replies[orig_index] = ans

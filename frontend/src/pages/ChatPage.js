@@ -32,7 +32,6 @@ function ChatPage() {
     const userMessage = inputMessage.trim();
     setInputMessage('');
     
-    // Add user message to chat
     setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setIsLoading(true);
 

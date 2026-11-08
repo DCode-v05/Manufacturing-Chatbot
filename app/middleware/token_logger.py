@@ -12,7 +12,6 @@ class TokenLoggerMiddleware(BaseHTTPMiddleware):
             j = json.loads(body) if body else {}
         except:
             j = {}
-        # estimate tokens for incoming user message(s)
         user_text = j.get("message") or "" 
         if not user_text:
             msgs = j.get("messages", [])
@@ -20,10 +19,8 @@ class TokenLoggerMiddleware(BaseHTTPMiddleware):
         tokens_in = estimate_tokens(user_text)
         response = await call_next(request)
         process_time = time.time() - start
-        # add header with token estimate (for debugging/profiling)
         response.headers["X-Token-Estimate-In"] = str(tokens_in)
         response.headers["X-Process-Time"] = str(process_time)
-        # optionally write to a log file
         with open("token_logs.csv", "a") as f:
             f.write(f"{time.time()},{request.url.path},{tokens_in},{process_time}\n")
         return response

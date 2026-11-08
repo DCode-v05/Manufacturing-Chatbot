@@ -19,7 +19,6 @@
   border: 1px solid #334155;
 }
 
-/* Markdown formatting styles */
 .message-bubble h1,
 .message-bubble h2,
 .message-bubble h3,
@@ -82,7 +81,6 @@
   min-height: 0;
 }
 
-/* Custom Scrollbar for dark theme */
 .chat-messages::-webkit-scrollbar {
   width: 8px;
 }
